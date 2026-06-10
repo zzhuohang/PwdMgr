@@ -17,10 +17,10 @@ spring:
       path: /h2-console
       settings:
         web-allow-others: false
-  # SQL 初始化（仅嵌入式数据库首次启动时执行）
+  # SQL 初始化（每次启动执行，IF NOT EXISTS 保证幂等）
   sql:
     init:
-      mode: embedded
+      mode: always
       schema-locations: classpath:db/init.sql
       continue-on-error: true
   jackson:

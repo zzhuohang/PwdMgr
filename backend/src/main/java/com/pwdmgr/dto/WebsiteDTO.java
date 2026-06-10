@@ -30,7 +30,7 @@ public class WebsiteDTO implements Serializable {
      */
     @NotBlank(message = "网站域名不能为空")
     @Size(max = 255, message = "域名长度不能超过255个字符")
-    @Pattern(regexp = "^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\\.[a-zA-Z]{2,}$", message = "域名格式不正确")
+    @Pattern(regexp = "^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*\\.[a-zA-Z]{2,}$", message = "域名格式不正确")
     private String domain;
 
     /**

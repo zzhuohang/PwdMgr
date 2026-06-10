@@ -56,15 +56,49 @@ PwdMgr/
 
 访问 http://localhost:8880 | 默认账号: `admin` / `admin123`
 
-### 生产模式（一键打包 EXE）
+### 生产模式（一键打包）
 
 ```bash
 # Windows（需要 JDK 21）
 build-exe.bat
-
-# 输出在 backend/target/dist/ 或 backend/target/portable/
-# 用户拿到 EXE 后双击即可运行，无需安装任何环境
 ```
+
+打包流程：
+1. `npm run build` → 前端输出到 `backend/src/main/resources/static/`
+2. `mvn package` → 后端打成可执行 JAR
+3. `jlink` → 裁剪精简 JRE（~40MB）
+4. `jpackage` → 打包 `.exe` 安装包（需要 [WiX Toolset 3.x](https://wixtoolset.org/)）
+5. 如果 jpackage 失败 → 自动降级为**便携包**（解压即用）
+
+#### 输出位置
+
+| 方案 | 路径 | 使用方式 |
+|------|------|----------|
+| EXE 安装包 | `backend/target/dist/PwdMgr-1.0.0.exe` | 双击安装 |
+| 便携包 | `backend/target/portable/PwdMgr/` | 整个文件夹发给别人，双击 `start.bat` 即可 |
+
+#### 便携包分发
+
+便携包是一个**自包含**的文件夹，内含：
+
+```
+PwdMgr/
+├── start.bat       # 双击启动（自动打开浏览器）
+├── PwdMgr.jar      # 后端程序（前端已内嵌）
+├── jre/            # 精简 JRE（无需安装 Java）
+└── data/           # 数据库文件（自动创建）
+```
+
+**⚠️ `start.bat` 不能单独拿出来用**，它依赖同目录的 `jre/` 和 `PwdMgr.jar`。分发时必须把整个 `PwdMgr/` 文件夹打包（zip 等），对方解压后双击 `start.bat` 即可运行，无需安装任何环境。
+
+#### 环境要求
+
+| 场景 | 需要安装 |
+|------|----------|
+| 开发模式 | JDK 21 + Maven + Node.js |
+| 运行便携包 | **无需任何环境** |
+| 运行 EXE 安装包 | **无需任何环境** |
+| 重新打包 | JDK 21 + Maven + Node.js（WiX 可选） |
 
 ## 浏览器扩展安装
 
