@@ -5,6 +5,11 @@ import { resolve } from 'path'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [vue()],
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, 'src')
+    }
+  },
   // 构建输出到 Spring Boot 的静态资源目录
   build: {
     outDir: resolve(__dirname, '../src/main/resources/static'),

@@ -21,7 +21,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@RequestMapping("/websites")
+@RequestMapping("/api/websites")
 @RequiredArgsConstructor
 public class WebsiteController {
 

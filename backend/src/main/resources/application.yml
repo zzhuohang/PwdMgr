@@ -1,27 +1,33 @@
 server:
   port: 8880
-  servlet:
-    context-path: /api
 
 spring:
   application:
     name: password-manager
+  # H2 嵌入式数据库配置（MySQL 兼容模式）
   datasource:
-    url: jdbc:mysql://localhost:3306/pwd-mgr?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-    username: root
-    password: root
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:h2:file:./data/pwdmgr;MODE=MySQL;DATABASE_TO_LOWER=TRUE;AUTO_SERVER=TRUE
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  # H2 Web 控制台（仅开发调试用）
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: false
+  # SQL 初始化（仅嵌入式数据库首次启动时执行）
+  sql:
+    init:
+      mode: embedded
+      schema-locations: classpath:db/init.sql
+      continue-on-error: true
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: Asia/Shanghai
     serialization:
       write-dates-as-timestamps: false
-  data:
-    redis:
-      host: localhost
-      port: 6379
-      password:
-      database: 0
 
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml

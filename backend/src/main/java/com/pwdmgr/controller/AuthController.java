@@ -20,7 +20,7 @@ import java.util.Map;
  */
 @Slf4j
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -74,5 +74,16 @@ public class AuthController {
         Long userId = securityUtil.getCurrentUserId();
         String masterKey = authService.getMasterKey(userId, masterPassword);
         return Result.success("验证成功", masterKey);
+    }
+
+    /**
+     * 登出（JWT 无状态，客户端自行清除 Token）
+     *
+     * @return 登出结果
+     */
+    @PostMapping("/logout")
+    public Result<Void> logout() {
+        log.info("用户登出: {}", securityUtil.getCurrentUsername());
+        return Result.success("登出成功", null);
     }
 }

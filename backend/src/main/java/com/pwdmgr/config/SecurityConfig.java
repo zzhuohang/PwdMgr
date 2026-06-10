@@ -81,16 +81,20 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 // 配置CORS
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                // 允许 H2 控制台使用 iframe
+                .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()))
                 // 配置会话管理
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // 配置请求授权
                 .authorizeHttpRequests(auth -> auth
                         // 公开接口
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/public/**").permitAll()
+                        .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
-                        // 静态资源
-                        .requestMatchers("/static/**", "/favicon.ico").permitAll()
+                        // H2 控制台（仅开发模式）
+                        .requestMatchers("/h2-console/**").permitAll()
+                        // 静态资源 — 前端打包文件
+                        .requestMatchers("/", "/index.html", "/favicon.ico").permitAll()
+                        .requestMatchers("/assets/**", "/css/**", "/js/**", "/img/**", "/fonts/**").permitAll()
                         // API文档
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         // 其他请求需要认证

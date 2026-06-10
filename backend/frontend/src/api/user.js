@@ -53,6 +53,17 @@ export function verifyMasterPassword(masterPassword) {
 }
 
 /**
+ * 登出（前端清除 token，JWT 无状态无需后端）
+ * @returns {Promise}
+ */
+export function logout() {
+    return request({
+        url: '/auth/logout',
+        method: 'post'
+    })
+}
+
+/**
  * 获取用户信息
  * @returns {Promise}
  */

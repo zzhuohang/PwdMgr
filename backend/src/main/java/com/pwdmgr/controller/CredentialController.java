@@ -23,7 +23,7 @@ import java.util.Map;
  */
 @Slf4j
 @RestController
-@RequestMapping("/credentials")
+@RequestMapping("/api/credentials")
 @RequiredArgsConstructor
 public class CredentialController {
 

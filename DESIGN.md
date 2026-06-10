@@ -4,9 +4,10 @@
 基于Spring Boot + Vue3的个人密码管理系统，支持浏览器扩展实时监控和自动填充。
 
 ## 技术栈
-- **后端**: Spring Boot 3.2 + Java 21 + MySQL + JWT + AES加密
-- **前端**: Vue3 + Vite + Element Plus + Pinia
+- **后端**: Spring Boot 3.2 + Java 21 + H2 嵌入式数据库 + JWT + AES加密
+- **前端**: Vue3 + Vite + Element Plus + Pinia（构建后嵌入后端 static 目录）
 - **浏览器扩展**: Chrome Extension (Manifest V3)
+- **打包**: jlink + jpackage → 单 EXE 分发（自带 JRE + 数据库，零环境依赖）
 
 ## 架构设计
 
