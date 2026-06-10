@@ -1,49 +1,61 @@
 @echo off
-chcp 65001 >nul
 setlocal enabledelayedexpansion
 
 echo ========================================
-echo   密码管理系统 - 一键启动
+echo   PwdMgr - Password Manager
 echo ========================================
 echo.
 
-:: 切换到后端目录
 cd /d "%~dp0backend"
 
-:: 检查Java
-echo [1/2] 检查 Java 环境...
+:: Check Java
+echo [1/2] Checking Java...
 java -version >nul 2>&1
 if errorlevel 1 (
-    echo [错误] 未找到 Java，请安装 JDK 21+
+    echo [ERROR] Java not found. Please install JDK 21+
     pause
     exit /b 1
 )
-echo [✓] Java 环境正常
+echo [OK] Java found
 
-:: 检查 Maven（开发模式需要）
-echo [2/2] 检查 Maven 环境...
-mvn -v >nul 2>&1
-if errorlevel 1 (
-    echo [错误] 未找到 Maven，请安装 Maven 3.6+
-    pause
-    exit /b 1
+:: Check JAR
+echo [2/2] Checking JAR...
+set "JAR_FILE=target\password-manager-1.0.0.jar"
+if not exist "%JAR_FILE%" (
+    echo [WARN] JAR not found, building...
+    mvn package -DskipTests -Dp3c.skip=true -q
+    if errorlevel 1 (
+        echo [ERROR] Build failed
+        pause
+        exit /b 1
+    )
 )
-echo [✓] Maven 环境正常
+echo [OK] JAR ready
+
+:: Build frontend if static dir missing
+if not exist "src\main\resources\static\index.html" (
+    echo [WARN] Frontend not built, building...
+    cd /d "%~dp0backend\frontend"
+    call npm run build
+    cd /d "%~dp0backend"
+)
 
 echo.
 echo ========================================
-echo   启动服务（H2 嵌入式数据库）
+echo   Starting Password Manager
 echo ========================================
 echo.
+echo URL: http://localhost:8880
+echo Default: admin / admin123
+echo H2 Console: http://localhost:8880/h2-console
+echo.
 
-:: 启动后端（包含前端静态文件）
-echo [启动] 密码管理系统...
-echo.
-echo 访问地址: http://localhost:8880
-echo 默认账号: admin / admin123
-echo H2控制台: http://localhost:8880/h2-console
-echo.
+:: Kill existing instance to avoid port conflict
+taskkill /f /im java.exe >nul 2>&1
+echo (Stopped existing instances)
+timeout /t 2 /nobreak >nul
+
 start http://localhost:8880
-mvn spring-boot:run
+java -jar %JAR_FILE%
 
 pause

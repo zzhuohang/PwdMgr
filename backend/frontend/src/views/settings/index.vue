@@ -478,7 +478,7 @@ const showExtensionGuide = () => {
 
 <style scoped>
 .settings-container {
-    padding: 20px;
+    padding: 20px 0;
 }
 
 .card-header {

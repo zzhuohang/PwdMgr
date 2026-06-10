@@ -46,6 +46,13 @@
         >
           搜索
         </el-button>
+
+        <el-button
+          style="margin-left: 10px"
+          @click="handleReset"
+        >
+          重置
+        </el-button>
       </div>
 
       <!-- 凭证列表 -->
@@ -185,13 +192,16 @@
             :type="showPasswordInput ? 'text' : 'password'"
             placeholder="请输入密码"
           >
+            <template #suffix>
+              <el-icon
+                class="password-toggle"
+                @click="showPasswordInput = !showPasswordInput"
+              >
+                <View v-if="!showPasswordInput" />
+                <Hide v-else />
+              </el-icon>
+            </template>
             <template #append>
-              <el-button @click="showPasswordInput = !showPasswordInput">
-                <el-icon>
-                  <View v-if="!showPasswordInput" />
-                  <Hide v-else />
-                </el-icon>
-              </el-button>
               <el-button @click="generatePassword">生成</el-button>
             </template>
           </el-input>
@@ -463,6 +473,14 @@ const handleSearch = () => {
     loadCredentialList()
 }
 
+// 重置搜索
+const handleReset = () => {
+    searchKeyword.value = ''
+    selectedWebsite.value = ''
+    currentPage.value = 1
+    loadCredentialList()
+}
+
 // 分页大小变化
 const handleSizeChange = (val) => {
     pageSize.value = val
@@ -644,5 +662,14 @@ onMounted(() => {
     color: #f56c6c;
     font-size: 12px;
     margin-top: 5px;
+}
+
+.password-toggle {
+    cursor: pointer;
+    color: #909399;
+}
+
+.password-toggle:hover {
+    color: #409eff;
 }
 </style>

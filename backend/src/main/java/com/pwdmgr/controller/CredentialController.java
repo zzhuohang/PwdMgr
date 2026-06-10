@@ -124,13 +124,13 @@ public class CredentialController {
      * @return 凭证列表
      */
     @GetMapping
-    public Result<Page<Credential>> listCredentials(
+    public Result<Page<Map<String, Object>>> listCredentials(
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer size,
             @RequestParam(required = false) Long websiteId,
             @RequestParam(required = false) String keyword) {
         Long userId = securityUtil.getCurrentUserId();
-        Page<Credential> result = credentialService.listCredentials(userId, page, size, websiteId, keyword);
+        Page<Map<String, Object>> result = credentialService.listCredentials(userId, page, size, websiteId, keyword);
         return Result.success(result);
     }
 

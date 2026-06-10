@@ -39,7 +39,7 @@ public class Credential implements Serializable {
     private Long websiteId;
 
     /**
-     * 用户名(加密存储)
+     * 用户名(明文存储)
      */
     private String username;
 

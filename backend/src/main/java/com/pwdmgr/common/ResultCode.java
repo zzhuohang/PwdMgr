@@ -96,7 +96,12 @@ public enum ResultCode {
     /**
      * 网站不存在
      */
-    WEBSITE_NOT_FOUND(1006, "网站不存在");
+    WEBSITE_NOT_FOUND(1006, "网站不存在"),
+
+    /**
+     * 凭证用户名已存在
+     */
+    CREDENTIAL_USERNAME_EXISTS(1007, "该用户名已存在");
 
     /**
      * 状态码

@@ -40,8 +40,14 @@ echo.
 
 :: ===== Step 2: Build Backend JAR =====
 echo [2/5] Building backend JAR...
+
+:: Kill any running Java process to avoid file lock
+taskkill /f /im java.exe >nul 2>&1
+echo     (Stopped existing Java processes)
+timeout /t 2 /nobreak >nul
+
 cd /d "%PROJECT_DIR%"
-call mvn package -DskipTests -Dp3c.skip=true -q
+call mvn clean package -DskipTests -Dp3c.skip=true -q
 if %errorlevel% neq 0 (
     echo [FAIL] Backend build failed
     pause

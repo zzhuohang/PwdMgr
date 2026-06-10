@@ -365,7 +365,7 @@ onMounted(async () => {
 
 <style scoped>
 .dashboard {
-    padding: 20px;
+    padding: 20px 0;
 }
 
 .stat-cards {

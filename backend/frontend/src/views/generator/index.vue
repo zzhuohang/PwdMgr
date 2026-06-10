@@ -254,7 +254,7 @@ generatePassword()
 
 <style scoped>
 .generator-container {
-    padding: 20px;
+    padding: 20px 0;
 }
 
 .card-header {

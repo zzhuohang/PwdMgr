@@ -264,7 +264,7 @@ const handleCommand = async (command) => {
 
 .main {
     background: #f5f7fa;
-    padding: 20px;
+    padding: 0;
 }
 
 /* 过渡动画 */

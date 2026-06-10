@@ -37,6 +37,21 @@
             :value="item"
           />
         </el-select>
+
+        <el-button
+          type="primary"
+          style="margin-left: 10px"
+          @click="handleSearch"
+        >
+          搜索
+        </el-button>
+
+        <el-button
+          style="margin-left: 10px"
+          @click="handleReset"
+        >
+          重置
+        </el-button>
       </div>
 
       <!-- 网站列表 -->
@@ -48,12 +63,13 @@
             </el-avatar>
           </template>
         </el-table-column>
-        <el-table-column prop="name" label="网站名称" width="180" />
+        <el-table-column prop="name" label="名称" width="180" />
         <el-table-column prop="domain" label="域名" width="250">
           <template #default="{ row }">
-            <el-link type="primary" :href="'https://' + row.domain" target="_blank">
+            <el-link v-if="row.domain" type="primary" :href="'https://' + row.domain" target="_blank">
               {{ row.domain }}
             </el-link>
+            <span v-else class="text-gray-400">-</span>
           </template>
         </el-table-column>
         <el-table-column prop="category" label="分类" width="120">
@@ -108,12 +124,12 @@
         :rules="websiteRules"
         label-width="100px"
       >
-        <el-form-item label="网站名称" prop="name">
-          <el-input v-model="websiteForm.name" placeholder="请输入网站名称" />
+        <el-form-item label="名称" prop="name">
+          <el-input v-model="websiteForm.name" placeholder="请输入名称，如 QQ、微信、163邮箱" />
         </el-form-item>
 
         <el-form-item label="域名" prop="domain">
-          <el-input v-model="websiteForm.domain" placeholder="请输入域名，如 example.com">
+          <el-input v-model="websiteForm.domain" placeholder="可选，如 mail.163.com">
             <template #prepend>https://</template>
           </el-input>
         </el-form-item>
@@ -212,11 +228,10 @@ const websiteForm = reactive({
 // 表单验证规则
 const websiteRules = {
     name: [
-        { required: true, message: '请输入网站名称', trigger: 'blur' },
+        { required: true, message: '请输入名称', trigger: 'blur' },
         { max: 100, message: '名称长度不能超过100个字符', trigger: 'blur' }
     ],
     domain: [
-        { required: true, message: '请输入域名', trigger: 'blur' },
         { max: 255, message: '域名长度不能超过255个字符', trigger: 'blur' }
     ],
     category: [
@@ -252,6 +267,14 @@ const loadWebsiteList = async () => {
 
 // 搜索
 const handleSearch = () => {
+    currentPage.value = 1
+    loadWebsiteList()
+}
+
+// 重置搜索
+const handleReset = () => {
+    searchKeyword.value = ''
+    selectedCategory.value = ''
     currentPage.value = 1
     loadWebsiteList()
 }
@@ -368,7 +391,7 @@ onMounted(() => {
 
 <style scoped>
 .websites-container {
-    padding: 20px;
+    padding: 20px 0;
 }
 
 .card-header {

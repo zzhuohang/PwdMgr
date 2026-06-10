@@ -54,11 +54,20 @@ public class CredentialService {
             throw new BusinessException(ResultCode.WEBSITE_NOT_FOUND);
         }
 
+        // 检查同一网站下用户名是否重复
+        LambdaQueryWrapper<Credential> dupWrapper = new LambdaQueryWrapper<>();
+        dupWrapper.eq(Credential::getUserId, userId)
+                .eq(Credential::getWebsiteId, dto.getWebsiteId())
+                .eq(Credential::getUsername, dto.getUsername());
+        if (credentialMapper.selectCount(dupWrapper) > 0) {
+            throw new BusinessException(ResultCode.CREDENTIAL_USERNAME_EXISTS);
+        }
+
         Credential credential = new Credential();
         credential.setUserId(userId);
         credential.setWebsiteId(dto.getWebsiteId());
-        // 加密存储用户名和密码
-        credential.setUsername(encryptionUtil.encrypt(dto.getUsername(), masterKey));
+        // 用户名明文存储，密码加密存储
+        credential.setUsername(dto.getUsername());
         credential.setPassword(encryptionUtil.encrypt(dto.getPassword(), masterKey));
         credential.setNotes(dto.getNotes());
         credential.setStrength(encryptionUtil.calculatePasswordStrength(dto.getPassword()));
@@ -93,8 +102,21 @@ public class CredentialService {
             throw new BusinessException(ResultCode.WEBSITE_NOT_FOUND);
         }
 
+        // 如果用户名变了，检查新用户名是否重复
+        if (!credential.getUsername().equals(dto.getUsername())) {
+            LambdaQueryWrapper<Credential> dupWrapper = new LambdaQueryWrapper<>();
+            dupWrapper.eq(Credential::getUserId, userId)
+                    .eq(Credential::getWebsiteId, dto.getWebsiteId())
+                    .eq(Credential::getUsername, dto.getUsername())
+                    .ne(Credential::getId, credentialId);
+            if (credentialMapper.selectCount(dupWrapper) > 0) {
+                throw new BusinessException(ResultCode.CREDENTIAL_USERNAME_EXISTS);
+            }
+        }
+
         credential.setWebsiteId(dto.getWebsiteId());
-        credential.setUsername(encryptionUtil.encrypt(dto.getUsername(), masterKey));
+        // 用户名明文存储，密码加密存储
+        credential.setUsername(dto.getUsername());
         credential.setPassword(encryptionUtil.encrypt(dto.getPassword(), masterKey));
         credential.setNotes(dto.getNotes());
         credential.setStrength(encryptionUtil.calculatePasswordStrength(dto.getPassword()));
@@ -125,12 +147,12 @@ public class CredentialService {
     }
 
     /**
-     * 获取凭证详情（解密）
+     * 获取凭证详情（密码解密，用户名明文）
      *
      * @param userId       用户ID
      * @param masterKey    主密钥
      * @param credentialId 凭证ID
-     * @return 凭证信息（已解密）
+     * @return 凭证信息
      */
     public Map<String, Object> getCredential(Long userId, String masterKey, Long credentialId) {
         Credential credential = credentialMapper.selectById(credentialId);
@@ -150,7 +172,7 @@ public class CredentialService {
                 "websiteId", credential.getWebsiteId(),
                 "websiteName", website != null ? website.getName() : "",
                 "websiteDomain", website != null ? website.getDomain() : "",
-                "username", encryptionUtil.decrypt(credential.getUsername(), masterKey),
+                "username", credential.getUsername(),
                 "password", encryptionUtil.decrypt(credential.getPassword(), masterKey),
                 "notes", credential.getNotes() != null ? credential.getNotes() : "",
                 "strength", credential.getStrength(),
@@ -177,7 +199,7 @@ public class CredentialService {
                     "websiteId", credential.getWebsiteId(),
                     "websiteName", website != null ? website.getName() : "",
                     "websiteDomain", website != null ? website.getDomain() : "",
-                    "username", encryptionUtil.decrypt(credential.getUsername(), masterKey),
+                    "username", credential.getUsername(),
                     "password", encryptionUtil.decrypt(credential.getPassword(), masterKey),
                     "notes", credential.getNotes() != null ? credential.getNotes() : "",
                     "strength", credential.getStrength()
@@ -193,9 +215,9 @@ public class CredentialService {
      * @param size      每页数量
      * @param websiteId 网站ID
      * @param keyword   搜索关键词
-     * @return 凭证列表
+     * @return 凭证列表（含 websiteName）
      */
-    public Page<Credential> listCredentials(Long userId, Integer page, Integer size, Long websiteId, String keyword) {
+    public Page<Map<String, Object>> listCredentials(Long userId, Integer page, Integer size, Long websiteId, String keyword) {
         Page<Credential> pageParam = new Page<>(page, size);
 
         LambdaQueryWrapper<Credential> wrapper = new LambdaQueryWrapper<>();
@@ -205,9 +227,73 @@ public class CredentialService {
             wrapper.eq(Credential::getWebsiteId, websiteId);
         }
 
+        // 处理关键词搜索（搜索用户名或网站名）
+        if (StringUtils.hasText(keyword)) {
+            // 先查找匹配关键词的网站ID
+            LambdaQueryWrapper<Website> websiteWrapper = new LambdaQueryWrapper<>();
+            websiteWrapper.eq(Website::getUserId, userId)
+                    .and(w -> w
+                            .like(Website::getName, keyword)
+                            .or()
+                            .like(Website::getDomain, keyword)
+                    );
+            List<Website> matchedWebsites = websiteMapper.selectList(websiteWrapper);
+            List<Long> matchedWebsiteIds = matchedWebsites.stream()
+                    .map(Website::getId)
+                    .collect(Collectors.toList());
+
+            // 搜索用户名或匹配的网站ID
+            wrapper.and(w -> w
+                    .like(Credential::getUsername, keyword)
+                    .or()
+                    .in(Credential::getWebsiteId, matchedWebsiteIds)
+            );
+        }
+
         wrapper.orderByDesc(Credential::getUpdatedAt);
 
-        return credentialMapper.selectPage(pageParam, wrapper);
+        Page<Credential> credentialPage = credentialMapper.selectPage(pageParam, wrapper);
+
+        // 收集所有 websiteId，批量查询网站名
+        List<Long> websiteIds = credentialPage.getRecords().stream()
+                .map(Credential::getWebsiteId)
+                .distinct()
+                .collect(Collectors.toList());
+
+        Map<Long, String> websiteNameMap = new HashMap<>();
+        Map<Long, String> websiteDomainMap = new HashMap<>();
+        if (!websiteIds.isEmpty()) {
+            LambdaQueryWrapper<Website> webWrapper = new LambdaQueryWrapper<>();
+            webWrapper.in(Website::getId, websiteIds);
+            for (Website w : websiteMapper.selectList(webWrapper)) {
+                websiteNameMap.put(w.getId(), w.getName());
+                websiteDomainMap.put(w.getId(), w.getDomain());
+            }
+        }
+
+        // 组装带 websiteName 的结果
+        Page<Map<String, Object>> result = new Page<>();
+        result.setCurrent(credentialPage.getCurrent());
+        result.setSize(credentialPage.getSize());
+        result.setTotal(credentialPage.getTotal());
+        result.setRecords(credentialPage.getRecords().stream().map(c -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", c.getId());
+            map.put("userId", c.getUserId());
+            map.put("websiteId", c.getWebsiteId());
+            map.put("websiteName", websiteNameMap.getOrDefault(c.getWebsiteId(), ""));
+            map.put("websiteDomain", websiteDomainMap.getOrDefault(c.getWebsiteId(), ""));
+            map.put("username", c.getUsername());
+            map.put("password", c.getPassword());
+            map.put("notes", c.getNotes());
+            map.put("strength", c.getStrength());
+            map.put("lastUsedTime", c.getLastUsedTime());
+            map.put("createdAt", c.getCreatedAt());
+            map.put("updatedAt", c.getUpdatedAt());
+            return map;
+        }).collect(Collectors.toList()));
+
+        return result;
     }
 
     /**
@@ -263,7 +349,7 @@ public class CredentialService {
                     Map<String, Object> item = new java.util.HashMap<>();
                     item.put("id", credential.getId());
                     item.put("websiteName", website != null ? website.getName() : "");
-                    item.put("username", credential.getUsername()); // 加密的用户名
+                    item.put("username", credential.getUsername());
                     item.put("lastUsedTime", credential.getLastUsedTime());
                     item.put("strength", credential.getStrength());
                     return item;
