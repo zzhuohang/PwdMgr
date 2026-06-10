@@ -56,8 +56,14 @@
       </div>
 
       <!-- 凭证列表 -->
-      <el-table :data="credentialList" style="width: 100%" v-loading="loading">
-        <el-table-column prop="websiteName" label="网站" width="180">
+      <el-table 
+        :data="credentialList" 
+        style="width: 100%"
+        :fit="true"
+        border
+        v-loading="loading"
+      >
+        <el-table-column prop="websiteName" label="网站" min-width="150">
           <template #default="{ row }">
             <div class="website-cell">
               <el-avatar :size="32" class="website-icon">
@@ -67,7 +73,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="username" label="用户名" width="200">
+        <el-table-column prop="username" label="用户名" min-width="150" show-overflow-tooltip>
           <template #default="{ row }">
             <div class="username-cell">
               <span>{{ row.username }}</span>
@@ -82,7 +88,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="password" label="密码" width="200">
+        <el-table-column prop="password" label="密码" width="180">
           <template #default="{ row }">
             <div class="password-cell">
               <span v-if="row.showPassword">{{ row.password }}</span>
@@ -109,7 +115,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="strength" label="强度" width="120">
+        <el-table-column prop="strength" label="强度" width="120" align="center">
           <template #default="{ row }">
             <el-rate
               v-model="row.strength"
@@ -120,12 +126,12 @@
           </template>
         </el-table-column>
         <el-table-column prop="notes" label="备注" min-width="150" show-overflow-tooltip />
-        <el-table-column prop="lastUsedTime" label="最后使用" width="180">
+        <el-table-column prop="lastUsedTime" label="最后使用" width="180" align="center">
           <template #default="{ row }">
             {{ formatTime(row.lastUsedTime) }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="200">
+        <el-table-column label="操作" width="200" align="center" fixed="right">
           <template #default="{ row }">
             <el-button type="primary" link @click="showEditDialog(row)">
               编辑
@@ -671,5 +677,32 @@ onMounted(() => {
 
 .password-toggle:hover {
     color: #409eff;
+}
+
+/* 表格对齐优化 */
+:deep(.el-table) {
+    width: 100% !important;
+}
+
+:deep(.el-table__header-wrapper),
+:deep(.el-table__body-wrapper) {
+    width: 100% !important;
+}
+
+:deep(.el-table__header),
+:deep(.el-table__body) {
+    width: 100% !important;
+    table-layout: fixed !important;
+}
+
+:deep(.el-table th.el-table__cell) {
+    background-color: #f5f7fa;
+    font-weight: 600;
+}
+
+:deep(.el-table .cell) {
+    box-sizing: border-box;
+    padding-left: 12px;
+    padding-right: 12px;
 }
 </style>

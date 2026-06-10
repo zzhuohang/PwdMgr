@@ -55,16 +55,22 @@
       </div>
 
       <!-- 网站列表 -->
-      <el-table :data="websiteList" style="width: 100%" v-loading="loading">
-        <el-table-column prop="icon" label="图标" width="80">
+      <el-table 
+        :data="websiteList" 
+        style="width: 100%"
+        :fit="true"
+        border
+        v-loading="loading"
+      >
+        <el-table-column prop="icon" label="图标" width="80" align="center">
           <template #default="{ row }">
             <el-avatar :size="40" class="website-icon">
               {{ row.name?.charAt(0) || 'W' }}
             </el-avatar>
           </template>
         </el-table-column>
-        <el-table-column prop="name" label="名称" width="180" />
-        <el-table-column prop="domain" label="域名" width="250">
+        <el-table-column prop="name" label="名称" min-width="150" show-overflow-tooltip />
+        <el-table-column prop="domain" label="域名" min-width="200" show-overflow-tooltip>
           <template #default="{ row }">
             <el-link v-if="row.domain" type="primary" :href="'https://' + row.domain" target="_blank">
               {{ row.domain }}
@@ -72,18 +78,18 @@
             <span v-else class="text-gray-400">-</span>
           </template>
         </el-table-column>
-        <el-table-column prop="category" label="分类" width="120">
+        <el-table-column prop="category" label="分类" width="120" align="center">
           <template #default="{ row }">
             <el-tag>{{ row.category || '未分类' }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="credentialCount" label="账号数量" width="100" />
-        <el-table-column prop="createdAt" label="创建时间" width="180">
+        <el-table-column prop="credentialCount" label="账号数量" width="100" align="center" />
+        <el-table-column prop="createdAt" label="创建时间" width="180" align="center">
           <template #default="{ row }">
             {{ formatDate(row.createdAt) }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="200">
+        <el-table-column label="操作" width="200" align="center" fixed="right">
           <template #default="{ row }">
             <el-button type="primary" link @click="showEditDialog(row)">
               编辑
@@ -416,5 +422,32 @@ onMounted(() => {
     margin-top: 20px;
     display: flex;
     justify-content: flex-end;
+}
+
+/* 表格对齐优化 */
+:deep(.el-table) {
+    width: 100% !important;
+}
+
+:deep(.el-table__header-wrapper),
+:deep(.el-table__body-wrapper) {
+    width: 100% !important;
+}
+
+:deep(.el-table__header),
+:deep(.el-table__body) {
+    width: 100% !important;
+    table-layout: fixed !important;
+}
+
+:deep(.el-table th.el-table__cell) {
+    background-color: #f5f7fa;
+    font-weight: 600;
+}
+
+:deep(.el-table .cell) {
+    box-sizing: border-box;
+    padding-left: 12px;
+    padding-right: 12px;
 }
 </style>

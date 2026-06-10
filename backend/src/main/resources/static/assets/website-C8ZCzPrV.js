@@ -1,1 +1,0 @@
-import{D as t}from"./index-Bn-mabMl.js";function i(e){return t({url:"/websites",method:"get",params:e})}function u(e){return t({url:"/websites",method:"post",data:e})}function n(e,s){return t({url:`/websites/${e}`,method:"put",data:s})}function o(e){return t({url:`/websites/${e}`,method:"delete"})}export{u as c,o as d,i as g,n as u};
