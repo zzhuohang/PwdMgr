@@ -1,0 +1,225 @@
+/* 密码管理系统助手 - 内容样式 */
+
+/* 提示框样式 */
+.pwd-manager-hint {
+    position: fixed;
+    z-index: 999999;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    padding: 16px;
+    min-width: 300px;
+    max-width: 400px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    animation: pwd-manager-fadeIn 0.3s ease;
+}
+
+@keyframes pwd-manager-fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pwd-manager-fadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+/* 弹出窗口样式 */
+.pwd-manager-popup {
+    position: fixed;
+    z-index: 999999;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    min-width: 350px;
+    max-width: 450px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* 填充按钮样式 */
+.pwd-manager-fill-btn {
+    background: #409eff;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.pwd-manager-fill-btn:hover {
+    background: #66b1ff;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(64, 158, 255, 0.3);
+}
+
+.pwd-manager-fill-btn:active {
+    background: #3a8ee6;
+    transform: translateY(0);
+}
+
+/* 复制按钮样式 */
+.pwd-manager-copy-btn {
+    background: #67c23a;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.pwd-manager-copy-btn:hover {
+    background: #85ce61;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(103, 194, 58, 0.3);
+}
+
+.pwd-manager-copy-btn:active {
+    background: #5daf34;
+    transform: translateY(0);
+}
+
+/* 关闭按钮样式 */
+.pwd-manager-close-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #909399;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.pwd-manager-close-btn:hover {
+    background: #f5f7fa;
+    color: #606266;
+}
+
+/* 凭证项样式 */
+.pwd-manager-credential-item {
+    padding: 12px;
+    margin-bottom: 8px;
+    background: #f5f7fa;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.pwd-manager-credential-item:hover {
+    background: #ecf5ff;
+    border-color: #d9ecff;
+}
+
+.pwd-manager-credential-item:last-child {
+    margin-bottom: 0;
+}
+
+/* 用户名样式 */
+.pwd-manager-username {
+    font-size: 14px;
+    color: #303133;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+}
+
+/* 按钮容器样式 */
+.pwd-manager-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+/* 消息提示样式 */
+.pwd-manager-message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999999;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    animation: pwd-manager-slideIn 0.3s ease;
+}
+
+@keyframes pwd-manager-slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes pwd-manager-slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.pwd-manager-message-success {
+    background: #f0f9eb;
+    color: #67c23a;
+    border: 1px solid #e1f3d8;
+}
+
+.pwd-manager-message-error {
+    background: #fef0f0;
+    color: #f56c6c;
+    border: 1px solid #fde2e2;
+}
+
+.pwd-manager-message-info {
+    background: #f4f4f5;
+    color: #909399;
+    border: 1px solid #e9e9eb;
+}
+
+/* 响应式调整 */
+@media (max-width: 480px) {
+    .pwd-manager-hint,
+    .pwd-manager-popup {
+        min-width: 280px;
+        max-width: calc(100vw - 40px);
+        left: 20px !important;
+        right: 20px;
+    }
+}

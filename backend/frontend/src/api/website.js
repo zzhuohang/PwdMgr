@@ -7,7 +7,7 @@ import request from './request'
  */
 export function getWebsiteList(params) {
     return request({
-        url: '/website/list',
+        url: '/websites',
         method: 'get',
         params
     })
@@ -20,7 +20,7 @@ export function getWebsiteList(params) {
  */
 export function getWebsiteDetail(id) {
     return request({
-        url: `/website/${id}`,
+        url: `/websites/${id}`,
         method: 'get'
     })
 }
@@ -32,7 +32,7 @@ export function getWebsiteDetail(id) {
  */
 export function createWebsite(data) {
     return request({
-        url: '/website',
+        url: '/websites',
         method: 'post',
         data
     })
@@ -46,7 +46,7 @@ export function createWebsite(data) {
  */
 export function updateWebsite(id, data) {
     return request({
-        url: `/website/${id}`,
+        url: `/websites/${id}`,
         method: 'put',
         data
     })
@@ -59,7 +59,7 @@ export function updateWebsite(id, data) {
  */
 export function deleteWebsite(id) {
     return request({
-        url: `/website/${id}`,
+        url: `/websites/${id}`,
         method: 'delete'
     })
 }
@@ -71,8 +71,18 @@ export function deleteWebsite(id) {
  */
 export function getWebsiteByDomain(domain) {
     return request({
-        url: '/website/domain',
-        method: 'get',
-        params: { domain }
+        url: `/websites/domain/${domain}`,
+        method: 'get'
+    })
+}
+
+/**
+ * 获取网站分类列表
+ * @returns {Promise}
+ */
+export function getWebsiteCategories() {
+    return request({
+        url: '/websites/categories',
+        method: 'get'
     })
 }

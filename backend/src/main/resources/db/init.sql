@@ -1,8 +1,8 @@
 -- 密码管理系统数据库初始化脚本
 
-CREATE DATABASE IF NOT EXISTS password_manager DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS `pwd-mgr` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-USE password_manager;
+USE `pwd-mgr`;
 
 -- 用户表
 CREATE TABLE IF NOT EXISTS sys_user (

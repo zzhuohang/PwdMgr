@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8880
   servlet:
     context-path: /api
 
@@ -7,7 +7,7 @@ spring:
   application:
     name: password-manager
   datasource:
-    url: jdbc:mysql://localhost:3306/password_manager?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3306/pwd-mgr?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver

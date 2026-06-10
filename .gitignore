@@ -1,0 +1,70 @@
+# 依赖
+node_modules/
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# 日志
+*.log
+logs/
+
+# 运行时
+*.pid
+*.seed
+*.pid.lock
+
+# 编译输出
+dist/
+build/
+out/
+
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+*.swp
+*.swo
+*~
+
+# 系统文件
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# 环境变量
+.env
+.env.local
+.env.*.local
+
+# Maven
+.mvn/
+mvnw
+mvnw.cmd
+
+# Gradle
+.gradle/
+gradlew
+gradlew.bat
+
+# 临时文件
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# 数据库
+*.db
+*.sqlite
+
+# 证书
+*.pem
+*.key
+*.crt
+*.p12
+
+# 敏感信息
+application-local.yml
+application-dev.yml
+application-prod.yml

@@ -27,13 +27,28 @@ export function register(data) {
 }
 
 /**
- * 用户登出
+ * 刷新Token
+ * @param {String} refreshToken 刷新Token
  * @returns {Promise}
  */
-export function logout() {
+export function refreshToken(refreshToken) {
     return request({
-        url: '/auth/logout',
-        method: 'post'
+        url: '/auth/refresh',
+        method: 'post',
+        params: { refreshToken }
+    })
+}
+
+/**
+ * 验证主密码
+ * @param {String} masterPassword 主密码
+ * @returns {Promise}
+ */
+export function verifyMasterPassword(masterPassword) {
+    return request({
+        url: '/auth/verify-master-password',
+        method: 'post',
+        params: { masterPassword }
     })
 }
 
@@ -62,14 +77,14 @@ export function changePassword(data) {
 }
 
 /**
- * 验证主密码
+ * 修改主密码
  * @param {Object} data 主密码信息
  * @returns {Promise}
  */
-export function verifyMasterPassword(data) {
+export function changeMasterPassword(data) {
     return request({
-        url: '/user/verify-master-password',
-        method: 'post',
+        url: '/user/master-password',
+        method: 'put',
         data
     })
 }
